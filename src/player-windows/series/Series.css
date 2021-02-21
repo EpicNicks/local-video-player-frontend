@@ -1,0 +1,85 @@
+#series video {
+    width: 50vw;
+    height: auto;
+}
+
+#series button{
+    min-width: 80px;
+    max-width: 100px;
+}
+
+#season-form-control{
+    min-width: 120px;
+    max-width: 150px;
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    right: 17.5vw;
+    top: 10vh;
+}
+
+#series-episode-list{
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    right: 3vw;
+    top: 0vh;
+}
+
+#series-season-list{
+    position:fixed;
+    margin:0;
+    padding:0;
+    right:16.5vw;
+    top:0vh;
+}
+
+#series-episode-list-list{
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    top: 10vh;
+    max-height: 50vh;
+    /*min-width: 10vw;*/
+    overflow: auto;
+}
+
+#series-season-list-list{
+    position:fixed;
+    margin:0;
+    padding:0;
+    top:10vh;
+    right:15vw;
+    max-height: 50vh;
+    /*min-width: 8vw;*/
+    overflow: auto;
+}
+
+@media screen and (max-width: 900px){
+    #series-episode-list{
+        position: fixed;
+        right: 22vw;
+        top: 32vh;
+    }
+    #series-episode-list h1{
+        font-size: 1.5em;
+    }
+    #series-episode-list-list{
+        position: fixed;
+        right: 20vw;
+        top: 40vh;
+    }
+    #series-season-list{
+        position:fixed;
+        right:52vw;
+        top:32vh;
+    }
+    #series-season-list h1{
+        font-size: 1.5em;
+    }
+    #series-season-list-list{
+        position:fixed;
+        right:50vw;
+        top: 40vh;
+    }
+}
