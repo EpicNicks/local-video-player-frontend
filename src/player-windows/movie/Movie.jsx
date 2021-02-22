@@ -33,7 +33,7 @@ class Movie extends Component{
         return(
             <div id="movie">
                 <h1>{this.state.title}</h1>
-                <video autoPlay width={960} height={540} controls >
+                <video autoPlay width="80%" controls >
                     <source src={`${this.state.src}`} type="video/mp4"/>
                     <source src={`${this.state.src}`} type="video/ogg"/>
                 </video>
