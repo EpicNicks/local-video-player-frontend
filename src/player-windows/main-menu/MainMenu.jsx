@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
 
 import { SERVER_PATH } from '../../global/globals';
 
@@ -24,17 +25,14 @@ class MainMenu extends Component{
         for (const obj of response){
             titles.push(obj);
         }
-        console.log(titles);
         return titles;
     }
 
     requestVideo(metadata){
         if (metadata.type === "movie"){
-            console.log("movie");
             this.props.history.push(`./Movie?title=${metadata.title}`)
         }
         else if(metadata.type === "series"){
-            console.log("series");
             this.props.history.push(`./Series?title=${metadata.title}`);
         }
         else{
@@ -58,14 +56,19 @@ class MainMenu extends Component{
         return(
             <Grid container direction="column" alignItems="center" justify="center">
                 <h1>Local Video Player Main Menu</h1>
-                    <Autocomplete
-                        autoHighlight
-                        renderInput={(params) => <TextField {...params} label="Search" variant="outlined"/>}
-                        options={this.state.titles}
-                        getOptionLabel={option => option.title}
-                        style={{ width: 800 }}
-                        onChange={(event, newValue) => {this.requestVideo(newValue)}}
-                    />
+                <Autocomplete
+                    autoHighlight
+                    renderInput={(params) => <TextField {...params} label="Search" variant="outlined"/>}
+                    options={this.state.titles}
+                    getOptionLabel={option => option.title}
+                    style={{ width: 800 }}
+                    onChange={(event, newValue) => {this.requestVideo(newValue)}}
+                />
+                <Button
+                    id="meta-gen-btn"
+                    variant="contained"
+                    onClick={() => {this.props.history.push("/meta-gen")}}
+                >Generate Meta Files</Button>
             </Grid>
         )
     }

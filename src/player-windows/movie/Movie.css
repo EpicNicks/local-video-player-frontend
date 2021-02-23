@@ -1,9 +1,5 @@
-
 #movie{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
-    align-content: center;
+    padding-top: 1%;
+    width: 70%;
+    margin: 0 auto;
 }

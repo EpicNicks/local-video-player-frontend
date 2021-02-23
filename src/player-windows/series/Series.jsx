@@ -11,17 +11,26 @@ import ListItemText from "@material-ui/core/ListItemText";
 import List from '@material-ui/core/List';
 
 import {SERVER_PATH} from "../../global/globals";
+import MoviePlayer from "../video-player/MoviePlayer";
+
+let videoJS = null
 
 class Series extends Component{
 
     updateVideo = (season, episode) => {
+        const src = `http://${SERVER_PATH}/seriesVideoAPI?title=${encodeURIComponent(this.state.title)}&season=${season}&episode=${episode}`;
         this.setState({
             season,
             episode,
-            src: `http://${SERVER_PATH}/seriesVideoAPI?title=${encodeURIComponent(this.state.title)}&season=${season}&episode=${episode}`,
+            src: src,
             selectedIndex: episode - 1,
             selectedSeasonIndex: season - 1
         });
+        if (videoJS !== null && videoJS !== undefined){
+            videoJS?.pause();
+            videoJS?.src({src, type: 'video/mp4'});
+            videoJS?.play();
+        }
     }
 
     getTitle = () => {
@@ -59,7 +68,6 @@ class Series extends Component{
     }
 
     selectEpisode = (index) => {
-        this.setState({selectedIndex: index, episode: index + 1})
         this.updateVideo(this.state.season, index + 1);
     }
 
@@ -89,15 +97,17 @@ class Series extends Component{
             .catch(err => err);
     }
 
-    getCurrentEpisode = () => this.state.seriesInfo.seasons[this.state.season-1].episodes[this.state.episode-1];
+    getEpisode = (season, episode) => this.state.seriesInfo.seasons[season - 1].episodes[episode - 1];
+    getCurrentEpisode = () => this.getEpisode(this.state.season, this.state.episode);
 
     constructor(props) {
         super(props);
+        const title = this.getTitle();
         this.state = {
-            title: this.getTitle(),
+            title: title,
             season: 1,
             episode: 1,
-            src: "",
+            src: `http://${SERVER_PATH}/seriesVideoAPI?title=${encodeURIComponent(title)}&season=1&episode=1`,
             seriesInfo: null,
             selectedIndex: 0,
             selectedSeasonIndex: 0
@@ -109,26 +119,42 @@ class Series extends Component{
         this.getSeriesInfo();
     }
 
+    componentWillUnmount() {
+        videoJS = null;
+    }
+
+    videoJsOptions = () => {
+        return {
+            controls: true,
+            autoplay: true,
+            playbackRates: [0.5, 1, 1.5, 2],
+            sources: [{
+                src: this.state.src,
+                type: 'video/mp4'
+            }],
+            //my injection
+            extraEvents: {
+                ended: () =>{
+                    if (this.state.episode < this.episodeCount(this.state.season)){
+                        this.updateVideo(this.state.season, this.state.episode + 1)
+                    }
+                },
+                play: (vjs) => {
+                    videoJS = vjs;
+                    console.log("start:inner");
+                }
+            }
+        }
+    };
+
     render() {
-        console.log(this.state.src);
         return (
-            <div>
+            <div id="series-container">
                 <div id="series">
                     {/*<h1>{`${this.state.title} - Season ${this.state.season}: Episode ${this.state.episode}`}</h1>*/}
-                    <h1>{this.state.seriesInfo !== null ? this.getCurrentEpisode().title !== "" ? `${this.getCurrentEpisode().title}` : `Episode ${this.state.episode}` : null}</h1>
                     {/*video size is overridden in CSS*/}
-                    <video
-                        autoPlay
-                        width={960}
-                        height={540}
-                        controls
-                        src={`${this.state.src}`}
-                        onEnded={() => {
-                            if (this.state.episode < this.episodeCount(this.state.season)){
-                                this.updateVideo(this.state.season, this.state.episode + 1);
-                            }
-                        }}
-                    />
+                    <MoviePlayer {...this.videoJsOptions()}/><h1>
+                    {this.state.seriesInfo !== null ? this.getCurrentEpisode().title !== "" ? `${this.getCurrentEpisode().title}` : `Episode ${this.state.episode}` : null}</h1>
                 </div>
                 <div id="series-episode-list">
                     <h1>Episode</h1>

@@ -1,0 +1,15 @@
+#meta-gen{
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+}
+
+#meta-gen-submit-btn{
+    padding-top: 20px;
+}
+
+#meta-gen-swap-btn{
+    padding-top: 20px;
+}
