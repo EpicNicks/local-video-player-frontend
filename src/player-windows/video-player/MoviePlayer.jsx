@@ -2,15 +2,23 @@
 import React, { Component } from 'react';
 import videoJS from 'video.js';
 import 'video.js/dist/video-js.css'
+import vjsMobile from 'videojs-mobile-ui';
+import 'videojs-mobile-ui/dist/videojs-mobile-ui.css'
 
 class MoviePlayer extends Component{
 
     componentDidMount() {
-        require('videojs-mobile-ui');
+        videoJS.registerPlugin('vjsMobile', vjsMobile);
         this.player = videoJS(this.videoNode, this.props, function OnPlayerReady(){
             console.log('OnPlayerReady', this);
         });
-        this.player.mobileUi();
+        this.player.mobileUi(
+            {
+                fullscreen:
+                    { enterOnRotate:true, exitOnRotate:true, lockOnRotate:true },
+                touchControls:
+                    { seekSeconds: 5, tapTimeout: 300, disableOnEnd: false }
+            });
 
         this.videoNode.addEventListener('keydown', e => {
             if (e.key === "ArrowRight")
