@@ -62,10 +62,13 @@
 }
 
 @media screen and (max-width: 900px) and (orientation: portrait){
+    #series{
+        width: 90%;
+    }
     #series-episode-list{
         position: fixed;
         right: 28vw;
-        top: 32vh;
+        top: 37vh;
     }
     #series-episode-list h1{
         font-size: 1.5em;
@@ -73,12 +76,12 @@
     #series-episode-list-list{
         position: fixed;
         right: 25vw;
-        top: 40vh;
+        top: 45vh;
     }
     #series-season-list{
         position:fixed;
         right:57vw;
-        top:32vh;
+        top:37vh;
     }
     #series-season-list h1{
         font-size: 1.5em;
@@ -86,7 +89,7 @@
     #series-season-list-list{
         position:fixed;
         right: 55vw;
-        top: 40vh;
+        top: 45vh;
     }
 }
 
