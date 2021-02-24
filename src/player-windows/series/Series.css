@@ -5,7 +5,7 @@
 }
 
 #series-season-list-list button{
-    min-width: 80px;
+    min-width: 80px;:
     max-width: 100px;
 }
 
@@ -91,31 +91,45 @@
 }
 
 @media screen and (max-width: 900px) and (orientation: landscape) {
-    #series {
+    #series{
         width: 80%;
         height: auto;
     }
     #series-container{
-        height: 1000px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
     }
+
+    #series-menu-lists{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        width: 60%;
+    }
+
     #series-season-list{
-        position: absolute;
-        top: 80%;
-        right: 60vw;
+        position: relative;
+        top: 0;
+        right: 0;
     }
+
     #series-season-list-list{
-        position:absolute;
-        top: 80%;
-        right: 5px;
+        position: relative;
+        right: 0;
+        top: 0;
+        overflow-y: auto;
     }
     #series-episode-list{
-        position: absolute;
-        top: 80%;
-        right: 30vw;
+        position: relative;
+        top: 0;
+        right: 0;
     }
     #series-episode-list-list{
-        position:absolute;
-        top: 100%;
-        right: 5px;
+        position: relative;
+        top: 0;
+        right: 0;
     }
 }

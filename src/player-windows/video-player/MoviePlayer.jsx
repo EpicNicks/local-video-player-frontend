@@ -15,7 +15,7 @@ class MoviePlayer extends Component{
             if (e.key === "ArrowLeft")
                 this.videoNode.currentTime = this.videoNode.currentTime - 5;
             if (e.key === "f")
-                this.videoNode.requestFullscreen();
+                this.videoNode.requestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
         });
         //instant focus on autoplay -> never lose focus
         this.videoNode.addEventListener('play', () => this.videoNode?.focus());
