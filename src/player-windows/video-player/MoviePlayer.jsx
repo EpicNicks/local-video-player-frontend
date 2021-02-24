@@ -1,13 +1,16 @@
 
-import React, { Component, forwardRef } from 'react';
+import React, { Component } from 'react';
 import videoJS from 'video.js';
 import 'video.js/dist/video-js.css'
 
 class MoviePlayer extends Component{
+
     componentDidMount() {
+        require('videojs-mobile-ui');
         this.player = videoJS(this.videoNode, this.props, function OnPlayerReady(){
             console.log('OnPlayerReady', this);
         });
+        this.player.mobileUi();
 
         this.videoNode.addEventListener('keydown', e => {
             if (e.key === "ArrowRight")
