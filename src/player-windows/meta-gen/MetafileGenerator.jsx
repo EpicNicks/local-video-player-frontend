@@ -213,6 +213,7 @@ export default class MetaGen extends Component{
                             label="title"
                             key="series-title"
                             onChange={e => this.setState({ title: e.target.value })}
+                            value={this.state.title}
                         />
                         <br/>
                         <TextField
@@ -220,6 +221,7 @@ export default class MetaGen extends Component{
                             label="genre"
                             key="series-genre"
                             onChange={e => this.setState({ genre: e.target.value.split(',').map(v => v.trim()) })}
+                            value={this.state.genre}
                         />
                         <br/>
                         <TextField
@@ -233,12 +235,15 @@ export default class MetaGen extends Component{
                                 this.seasons.length = parseInt(e.target.value);
                                 this.forceUpdate();
                             }}
+                            value={this.seasons.length}
                         />
                         <br/>
                         <div id="meta-gen-episode-entry">
-                            <List>
-                                {this.seasons !== null && this.seasons.length > 0 ? this.generateSeasonRows() : null}
-                            </List>
+                            {this.seasons.length > 0 ?
+                                <List>
+                                    {this.generateSeasonRows()}
+                                </List>
+                            : null }
                             {this.state.selectedIndex < this.seasons.length
                             ?   <div>
                                     <TextField
@@ -268,12 +273,7 @@ export default class MetaGen extends Component{
                                 </div>
                                 : null
                             }
-
                         </div>
-                        <br/>
-                        <List>
-                            {}
-                        </List>
                     </div>
                 </div>
             )
@@ -328,6 +328,8 @@ export default class MetaGen extends Component{
                                     }
                                     else if (obj.type === "series"){
                                         console.log("series uploaded");
+                                        this.seasons = obj.seasons;
+                                        this.setState({title: obj.title, type: obj.type, genre: obj.genre, seasons: obj.seasons});
                                     }
                                 });
                             }}
