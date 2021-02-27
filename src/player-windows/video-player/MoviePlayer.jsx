@@ -28,6 +28,20 @@ class MoviePlayer extends Component{
             if (e.key === "f")
                 this.videoNode.requestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
         });
+        window.addEventListener('orientationchange', () => {
+            const orientation = window.screen.orientation;
+            console.log(`orientation changed to ${orientation.type}`)
+            if (orientation.type === "landscape-primary" || orientation.type === "landscape-secondary"){
+                this.videoNode?.requestFullscreen()
+                    .then(() => {})
+                    .catch(err => {});
+            }
+            else{
+                document.exitFullscreen()
+                    .then(() => {})
+                    .catch(err => {});
+            }
+        });
         //instant focus on autoplay -> never lose focus
         this.videoNode.addEventListener('play', () => this.videoNode?.focus());
         this.videoNode.addEventListener('focusout', () => this.videoNode?.focus());

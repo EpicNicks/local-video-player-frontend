@@ -27,8 +27,8 @@ class Movie extends Component{
             }],
             //my injection
             extraEvents: {
-                ended: () => console.log("ended"),
-                play: () => console.log('play:outer')
+                ended: () => {},
+                play: () => {}
             }
         }
     };

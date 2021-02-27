@@ -6,10 +6,6 @@
     align-items: center;
 }
 
-#meta-gen-submit-btn{
-    padding-top: 20px;
-}
-
-#meta-gen-swap-btn{
+.meta-gen-btn{
     padding-top: 20px;
 }
