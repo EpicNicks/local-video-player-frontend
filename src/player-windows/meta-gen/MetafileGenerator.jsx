@@ -181,7 +181,7 @@ export default class MetaGen extends Component{
                             id="standard-basic"
                             label="path"
                             key="movie-path"
-                            onChange={e => this.setState({ path: e.target.value })}
+                            onChange={e => this.setState({ path: e.target.value.replace(/"/g, "") })}
                             value={this.state.path}
                         />
                         <br/>
@@ -198,7 +198,7 @@ export default class MetaGen extends Component{
                             label="genre"
                             key="movie-genre"
                             onChange={e => this.setState({ genre: e.target.value.split(',').map(v => v.trim()) })}
-                            value={this.state.genre.join(",")}
+                            value={this.state.genre.join(", ")}
                         />
                     </div>
                 </div>
