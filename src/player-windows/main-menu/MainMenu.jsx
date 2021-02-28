@@ -54,22 +54,24 @@ class MainMenu extends Component{
 
     render(){
         return(
-            <Grid container direction="column" alignItems="center" justify="center">
-                <h1>Local Video Player Main Menu</h1>
-                <Autocomplete
-                    autoHighlight
-                    renderInput={(params) => <TextField {...params} label="Search" variant="outlined"/>}
-                    options={this.state.titles}
-                    getOptionLabel={option => option.title}
-                    style={{ width: 800 }}
-                    onChange={(event, newValue) => {this.requestVideo(newValue)}}
-                />
-                <Button
-                    id="meta-gen-btn"
-                    variant="contained"
-                    onClick={() => {this.props.history.push("/meta-gen")}}
-                >Generate Meta Files</Button>
-            </Grid>
+            <div id="main-menu">
+                <Grid container direction="column" alignItems="center" justify="center">
+                    <h1>Local Video Player Main Menu</h1>
+                    <Autocomplete
+                        autoHighlight
+                        renderInput={(params) => <TextField {...params} label="Search" variant="outlined"/>}
+                        options={this.state.titles}
+                        getOptionLabel={option => option.title}
+                        style={{ width: "60%" }}
+                        onChange={(event, newValue) => {this.requestVideo(newValue)}}
+                    />
+                    <Button
+                        id="meta-gen-btn"
+                        variant="contained"
+                        onClick={() => {this.props.history.push("/meta-gen")}}
+                    >Generate Meta Files</Button>
+                </Grid>
+            </div>
         )
     }
 }

@@ -1,1 +1,1 @@
-export const SERVER_PATH = 'localhost:9000';
+export const SERVER_PATH = '192.168.2.70:9000';

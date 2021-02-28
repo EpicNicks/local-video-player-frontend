@@ -303,7 +303,7 @@ export default class MetaGen extends Component{
                 <div id="meta-gen-load-btn" className="meta-gen-btn">
                     <Button
                         variant="contained"
-                        onClick={() => this.setState({fileUploadHidden: false})}
+                        onClick={() => this.setState({fileUploadHidden: !this.state.fileUploadHidden})}
                     >
                         Load from file
                     </Button>

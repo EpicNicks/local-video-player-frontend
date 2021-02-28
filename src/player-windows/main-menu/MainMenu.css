@@ -1,14 +1,20 @@
 
 #meta-gen-btn{
-    visibility: hidden;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    visibility: visible;
 }
 
-@media not screen and (max-width: 900px){
+@media screen and (max-width: 900px){
     #meta-gen-btn{
-        position: fixed;
-        top: 10px;
-        left: 10px;
-        visibility: visible;
+        visibility: hidden;
+    }
+    #main-menu{
+        width: 100vw;
+    }
+    #main-menu h1{
+        font-size: 1.3em;
     }
 }
 

@@ -6,6 +6,10 @@
 
 @media screen and (max-width: 900px) and (orientation: portrait) {
     #movie{
+        padding-top: 0;
         width: 100%;
+    }
+    #movie h1{
+        font-size: 1.3em;
     }
 }

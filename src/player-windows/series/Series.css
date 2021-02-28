@@ -5,7 +5,7 @@
 }
 
 #series-season-list-list button{
-    min-width: 80px;:
+    min-width: 80px;
     max-width: 100px;
 }
 
@@ -64,38 +64,59 @@
 @media screen and (max-width: 900px) and (orientation: portrait){
     #series{
         width: 100%;
+        padding-top: 0;
+    }
+    #series h1{
+        font-size: 100%;
+    }
+    #series-container{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+    #series-menu-lists{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        width: 60%;
     }
     #series-episode-list{
-        position: fixed;
-        right: 28vw;
-        top: 40vh;
+        position: relative;
+        right: 0;
+        top: 0;
     }
     #series-episode-list h1{
         font-size: 1.5em;
     }
     #series-episode-list-list{
-        position: fixed;
-        right: 25vw;
-        top: 48vh;
+        position: relative;
+        right: 0;
+        top: 0;
     }
     #series-season-list{
-        position:fixed;
-        right:57vw;
-        top: 40vh;
+        position:relative;
+        right: 0;
+        top: 0;
     }
     #series-season-list h1{
         font-size: 1.5em;
     }
     #series-season-list-list{
-        position:fixed;
-        right: 55vw;
-        top: 48vh;
+        position:relative;
+        right: 0;
+        top: 0;
+        overflow-y: auto;
+    }
+    #series-menu-lists{
+        margin-bottom: 1%;
     }
 }
 
 @media screen and (max-width: 900px) and (orientation: landscape) {
     #series{
-        width: 80%;
+        width: 70%;
         height: auto;
     }
     #series-container{

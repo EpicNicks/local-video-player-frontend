@@ -2,20 +2,22 @@
 import React, { Component } from 'react';
 import videoJS from 'video.js';
 import 'video.js/dist/video-js.css'
-import vjsMobile from 'videojs-mobile-ui';
+
+import 'videojs-mobile-ui';
 import 'videojs-mobile-ui/dist/videojs-mobile-ui.css'
+
+import './MoviePlayer.css'
 
 class MoviePlayer extends Component{
 
     componentDidMount() {
-        videoJS.registerPlugin('vjsMobile', vjsMobile);
         this.player = videoJS(this.videoNode, this.props, function OnPlayerReady(){
             console.log('OnPlayerReady', this);
         });
         this.player.mobileUi(
             {
                 fullscreen:
-                    { enterOnRotate:true, exitOnRotate:true, lockOnRotate:true },
+                    { enterOnRotate:true, exitOnRotate:true, lockOnRotate:false },
                 touchControls:
                     { seekSeconds: 5, tapTimeout: 300, disableOnEnd: false }
             });
@@ -26,20 +28,26 @@ class MoviePlayer extends Component{
             if (e.key === "ArrowLeft")
                 this.videoNode.currentTime = this.videoNode.currentTime - 5;
             if (e.key === "f")
-                this.videoNode.requestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+                document.querySelector(".vjs-fullscreen-control").click();
+            if (e.key === " " && !this.videoNode.webkitDisplayingFullscreen)
+                if (this.videoNode.paused){
+                    this.videoNode.play();
+                    console.log("paused after play: ", this.videoNode.paused);
+                }
+                else{
+                    this.videoNode.pause();
+                }
         });
         window.addEventListener('orientationchange', () => {
             const orientation = window.screen.orientation;
             console.log(`orientation changed to ${orientation.type}`)
             if (orientation.type === "landscape-primary" || orientation.type === "landscape-secondary"){
-                this.videoNode?.requestFullscreen()
-                    .then(() => {})
-                    .catch(err => {});
+                //nothing seems to work to enter fullscreen
             }
             else{
-                document.exitFullscreen()
-                    .then(() => {})
-                    .catch(err => {});
+                if (document.fullscreenElement !== null){
+                    document.exitFullscreen();
+                }
             }
         });
         //instant focus on autoplay -> never lose focus
