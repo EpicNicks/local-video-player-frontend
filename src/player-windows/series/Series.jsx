@@ -82,7 +82,7 @@ class Series extends Component{
                 selected={selectedIndex === index}
                 onClick={() => this.selectEpisode(index)}
             >
-                <ListItemText primary={`${labelString} ${index + 1}`}/>
+                <ListItemText primary={`${labelString} ${this.getEpisode(this.state.season, index + 1).episode}`}/>
             </ListItem>
         )
     }
