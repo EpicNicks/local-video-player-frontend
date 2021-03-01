@@ -115,7 +115,7 @@ export default class MetaGen extends Component{
         for (let i = 0; i < this.seasons[this.state.season - 1].episodes.length; i++){
             res.push(
                 <div>
-                    <h3>{`Episode ${i + 1}`}</h3>
+                    <h3>{`Episode ${this.seasons[this.state.season - 1]?.episodes[this.state.episode - 1]?.episode ?? i + 1}`}</h3>
                     <TextField
                         type="text"
                         label="title"
@@ -153,14 +153,15 @@ export default class MetaGen extends Component{
                         label="episode"
                         key={`s${this.state.season}ep${i+1}episode`}
                         type="number"
+                        step="any"
                         InputLabelProps={{shrink: true}}
                         value={this.seasons[this.state.season - 1]?.episodes[i]?.episode}
                         onChange={e =>{
                             if ([null, undefined].includes(this.seasons[this.state.season - 1].episodes[i])){
-                                this.seasons[this.state.season - 1].episodes[i] = {title: "", path: "", episode: parseInt(e.target.value)}
+                                this.seasons[this.state.season - 1].episodes[i] = {title: "", path: "", episode: parseFloat(e.target.value)}
                             }
                             else{
-                                this.seasons[this.state.season - 1].episodes[i].episode = parseInt(e.target.value);
+                                this.seasons[this.state.season - 1].episodes[i].episode = parseFloat(e.target.value);
                             }
                             this.forceUpdate();
                         }}
@@ -221,7 +222,7 @@ export default class MetaGen extends Component{
                             label="genre"
                             key="series-genre"
                             onChange={e => this.setState({ genre: e.target.value.split(',').map(v => v.trim()) })}
-                            value={this.state.genre}
+                            value={this.state.genre.join(", ")}
                         />
                         <br/>
                         <TextField
@@ -246,6 +247,17 @@ export default class MetaGen extends Component{
                             : null }
                             {this.state.selectedIndex < this.seasons.length
                             ?   <div>
+                                    <TextField
+                                        id="standard-basic"
+                                        value={this.seasons[this.state.season - 1]?.title}
+                                        label={`Season ${this.state.season} title`}
+                                        InputLabelProps={{shrink: true}}
+                                        onChange={e => {
+                                            this.seasons[this.state.season - 1].title = e.target.value;
+                                            this.forceUpdate();
+                                        }}
+                                    />
+                                    <br/>
                                     <TextField
                                         type="number"
                                         id="standard-basic"
@@ -329,6 +341,7 @@ export default class MetaGen extends Component{
                                     else if (obj.type === "series"){
                                         console.log("series uploaded");
                                         this.seasons = obj.seasons;
+                                        console.log(this.seasons);
                                         this.setState({title: obj.title, type: obj.type, genre: obj.genre, seasons: obj.seasons});
                                     }
                                 });
