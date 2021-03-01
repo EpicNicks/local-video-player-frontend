@@ -115,7 +115,7 @@ export default class MetaGen extends Component{
         for (let i = 0; i < this.seasons[this.state.season - 1].episodes.length; i++){
             res.push(
                 <div>
-                    <h3>{`Episode ${this.seasons[this.state.season - 1]?.episodes[this.state.episode - 1]?.episode ?? i + 1}`}</h3>
+                    <h3>{`Episode ${this.seasons[this.state.season - 1]?.episodes[i]?.episode ?? i + 1}`}</h3>
                     <TextField
                         type="text"
                         label="title"
