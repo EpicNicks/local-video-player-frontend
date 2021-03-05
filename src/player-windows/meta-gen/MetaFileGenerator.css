@@ -8,3 +8,27 @@
 .meta-gen-btn{
     padding-top: 20px;
 }
+
+#meta-gen-series-top{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+    padding: 0;
+}
+
+#meta-gen-series-loader{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    flex: 0 1 auto;
+}
+
+#meta-gen-series-middle{
+    flex: 0 1 auto;
+}
+
+.invisible{
+    visibility: hidden;
+}

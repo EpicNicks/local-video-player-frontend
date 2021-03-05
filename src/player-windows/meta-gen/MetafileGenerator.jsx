@@ -8,6 +8,8 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 
+import { TMDB_KEY } from "../../global/apiKeys";
+
 const apply = (val, f) => {
     f(val);
     return val;
@@ -53,6 +55,58 @@ export default class MetaGen extends Component{
             fileUploadHidden: true
         }
     }
+    loadEpisodes = () => {
+        if (!["", null, undefined].includes(this.state.title))
+            fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_KEY}&query=${encodeURIComponent(this.state.title)}`)
+                .then(res => res.text())
+                .then(res => {
+                    console.log(res);
+                    const results = JSON.parse(res).results[0];
+                    const id = results.id;
+                    this.fetchEpisodes(id);
+                })
+                .catch(err => console.error(err));
+    };
+
+    fetchEpisodes = id => {
+        if (id !== null){
+            const request = `https://api.themoviedb.org/3/tv/${id}/season/${this.state.season}?api_key=${TMDB_KEY}`;
+            console.log(request);
+            fetch(request)
+                .then(res => res.text())
+                .then(res => {
+                    const obj = JSON.parse(res)
+                    console.log(obj);
+                    if ([null, undefined].includes(this.seasons[this.state.season - 1]))
+                        this.seasons[this.state.season - 1] = {title: "", episodes: []};
+                    this.seasons[this.state.season - 1].episodes.length = obj.episodes.length;
+                    for (let i = 0; i < obj.episodes.length; i++){
+                        if ([null, undefined].includes(this.seasons[this.state.season - 1].episodes[i]))
+                            this.seasons[this.state.season - 1].episodes[i] = {title: "", path: "", episode: 0}
+                        this.seasons[this.state.season - 1].episodes[i].title = obj.episodes[i].name;
+                        this.seasons[this.state.season - 1].episodes[i].episode = obj.episodes[i].episode_number;
+                    }
+                    this.forceUpdate();
+                });
+        }
+    };
+
+    loadPaths = paths => {
+        if ([null, undefined].includes(this.seasons[this.state.season - 1])){
+            this.seasons[this.state.season - 1] = {title: "", episodes: []}
+        }
+        const season = this.seasons[this.state.season - 1];
+        if (season.episodes.length < paths.length)
+            season.episodes.length = paths.length;
+        console.log(season.episodes);
+        console.log(paths);
+        for (let i = 0; i < paths.length; i++) {
+            if ([null, undefined].includes(season.episodes[i]))
+                season.episodes[i] = {path: "", episode: 0, title: ""};
+            season.episodes[i].path = paths[i];
+        }
+        this.forceUpdate();
+    };
 
     generateJSON = () => {
         let json;
@@ -206,86 +260,118 @@ export default class MetaGen extends Component{
             )
         else
             return (
-                <div>
-                    <h1>.seriesn generation</h1>
-                    <div className="meta-textfields">
-                        <TextField
-                            id="standard-basic"
-                            label="title"
-                            key="series-title"
-                            onChange={e => this.setState({ title: e.target.value })}
-                            value={this.state.title}
-                        />
-                        <br/>
-                        <TextField
-                            id="standard-basic"
-                            label="genre"
-                            key="series-genre"
-                            onChange={e => this.setState({ genre: e.target.value.split(',').map(v => v.trim()) })}
-                            value={this.state.genre.join(", ")}
-                        />
-                        <br/>
-                        <TextField
-                            id="standard-basic"
-                            label="seasons (number)"
-                            type="number"
+                <div id="meta-gen-series-top">
+                    <div id="meta-gen-series-loader">
+                        <button
+                            onClick={() => this.loadEpisodes()}
+                        >
+                            Load Episodes
+                        </button>
+                        <h3>Load Paths</h3>
+                        <input
+                            type="file"
                             onChange={e => {
-                                if (parseInt(e.target.value) < 0){
-                                    e.target.value = "0";
-                                }
-                                this.seasons.length = parseInt(e.target.value);
-                                this.forceUpdate();
+                                const file = e.target.files[0];
+                                const u = URL.createObjectURL(file);
+                                const x = new XMLHttpRequest();
+                                x.open('GET', u, false);
+                                x.send();
+                                URL.revokeObjectURL(u);
+                                const blob = new Blob([x.responseText], {type: 'text/plain'});
+                                blob.text().then(t => {
+                                    this.loadPaths(t.trim().split("\n").map(v => v.replace(/"/g, "").replace(/\r?\n|\r/g, "")));
+                                });
                             }}
-                            value={this.seasons.length}
-                        />
-                        <br/>
-                        <div id="meta-gen-episode-entry">
-                            {this.seasons.length > 0 ?
-                                <List>
-                                    {this.generateSeasonRows()}
-                                </List>
-                            : null }
-                            {this.state.selectedIndex < this.seasons.length
-                            ?   <div>
-                                    <TextField
-                                        id="standard-basic"
-                                        value={this.seasons[this.state.season - 1]?.title}
-                                        label={`Season ${this.state.season} title`}
-                                        InputLabelProps={{shrink: true}}
-                                        onChange={e => {
-                                            this.seasons[this.state.season - 1].title = e.target.value;
-                                            this.forceUpdate();
-                                        }}
-                                    />
-                                    <br/>
-                                    <TextField
-                                        type="number"
-                                        id="standard-basic"
-                                        value={this.seasons[this.state.season - 1]?.episodes?.length}
-                                        label={`Season ${this.state.season} Episode Count`}
-                                        InputLabelProps={{shrink: true}}
-                                        onChange={ e => {
-                                            if (parseInt(e.target.value) < 0)
-                                                e.target.value = "0";
-                                            if ([null, undefined].includes(this.seasons[this.state.season - 1])){
-                                                this.seasons[this.state.season - 1] = {title: "", episodes: []}
+                        >
+                        </input>
+                    </div>
+                    <div id="meta-gen-series-middle">
+                        <h1>.seriesn generation</h1>
+                        <div className="meta-textfields">
+                            <TextField
+                                id="standard-basic"
+                                label="title"
+                                key="series-title"
+                                onChange={e => this.setState({ title: e.target.value })}
+                                value={this.state.title}
+                            />
+                            <br/>
+                            <TextField
+                                id="standard-basic"
+                                label="genre"
+                                key="series-genre"
+                                onChange={e => this.setState({ genre: e.target.value.split(',').map(v => v.trim()) })}
+                                value={this.state.genre.join(", ")}
+                            />
+                            <br/>
+                            <TextField
+                                id="standard-basic"
+                                label="seasons (number)"
+                                type="number"
+                                onChange={e => {
+                                    if (parseInt(e.target.value) < 0){
+                                        e.target.value = "0";
+                                    }
+                                    this.seasons.length = parseInt(e.target.value);
+                                    this.forceUpdate();
+                                }}
+                                value={this.seasons.length}
+                            />
+                            <br/>
+                            <div id="meta-gen-episode-entry">
+                                {this.seasons.length > 0 ?
+                                    <List>
+                                        {this.generateSeasonRows()}
+                                    </List>
+                                    : null }
+                                {this.state.selectedIndex < this.seasons.length
+                                    ?   <div>
+                                        <TextField
+                                            id="standard-basic"
+                                            value={this.seasons[this.state.season - 1]?.title}
+                                            label={`Season ${this.state.season} title`}
+                                            InputLabelProps={{shrink: true}}
+                                            onChange={e => {
+                                                this.seasons[this.state.season - 1].title = e.target.value;
+                                                this.forceUpdate();
+                                            }}
+                                        />
+                                        <br/>
+                                        <TextField
+                                            type="number"
+                                            id="standard-basic"
+                                            value={this.seasons[this.state.season - 1]?.episodes?.length}
+                                            label={`Season ${this.state.season} Episode Count`}
+                                            InputLabelProps={{shrink: true}}
+                                            onChange={ e => {
+                                                if (parseInt(e.target.value) < 0)
+                                                    e.target.value = "0";
+                                                if ([null, undefined].includes(this.seasons[this.state.season - 1])){
+                                                    this.seasons[this.state.season - 1] = {title: "", episodes: []}
+                                                    this.seasons[this.state.season - 1].episodes = Array(parseInt(e.target.value));
+                                                }
+                                                console.log(this.seasons[this.state.season - 1].episodes);
                                                 this.seasons[this.state.season - 1].episodes = Array(parseInt(e.target.value));
-                                            }
-                                            console.log(this.seasons[this.state.season - 1].episodes);
-                                            this.seasons[this.state.season - 1].episodes = Array(parseInt(e.target.value));
-                                            this.forceUpdate();
-                                        }}
-                                    />
-                                </div>: null
-                            }
-                            {this.seasons[this.state.season - 1]?.episodes?.length > 0
-                                ?
-                                <div id="meta-gen-episode-fields">
-                                    {this.episodeFieldGen()}
-                                </div>
-                                : null
-                            }
+                                                this.forceUpdate();
+                                            }}
+                                        />
+                                    </div>: null
+                                }
+                                {this.seasons[this.state.season - 1]?.episodes?.length > 0
+                                    ?
+                                    <div id="meta-gen-episode-fields">
+                                        {this.episodeFieldGen()}
+                                    </div>
+                                    : null
+                                }
+                            </div>
                         </div>
+                    </div>
+                    <div className="invisible">
+                        <input
+                            type="file"
+                        >
+                        </input>
                     </div>
                 </div>
             )
@@ -325,7 +411,6 @@ export default class MetaGen extends Component{
                             type="file"
                             onChange={e => {
                                 const file = e.target.files[0];
-                                console.log(file);
                                 const u = URL.createObjectURL(file);
                                 const x = new XMLHttpRequest();
                                 x.open('GET', u, false);
