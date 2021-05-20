@@ -52,7 +52,7 @@ class Series extends Component{
         }
     }
 
-    renderSeasonRow = (props, labelString) => {
+    renderSeasonRow = (props, labelString, useNumber) => {
         const { index, style } = props;
         const selectedIndex = this.state.selectedSeasonIndex;
         return(
@@ -62,7 +62,7 @@ class Series extends Component{
                 selected={selectedIndex === index}
                 onClick={() => this.selectSeason(index)}
             >
-                <ListItemText primary={`${labelString} ${index + 1}`}/>
+                <ListItemText primary={`${labelString} ${useNumber ? index + 1 : ""}`}/>
             </ListItem>
         )
     }
@@ -161,7 +161,7 @@ class Series extends Component{
                         <h1>Season</h1>
                         <List id="series-season-list-list">
                             {this.state.seriesInfo !== null ? this.state.seriesInfo.seasons.map((season, index) =>
-                                this.renderSeasonRow({index: index, style: null}, "Season")
+                                this.renderSeasonRow({index: index, style: null}, [null, undefined, ""].includes(season.title) ? "Season" : season.title, [null, undefined, ""].includes(season.title))
                             ) : null}
                         </List>
                     </div>
