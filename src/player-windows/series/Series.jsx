@@ -150,13 +150,14 @@ class Series extends Component{
     render() {
         return (
             <div id="series-container">
+                <div className={'invisible'}/>
                 <div id="series">
                     {/*<h1>{`${this.state.title} - Season ${this.state.season}: Episode ${this.state.episode}`}</h1>*/}
                     {/*video size is overridden in CSS*/}
                     <MoviePlayer {...this.videoJsOptions()}/>
                     <h1>{this.state.seriesInfo !== null ? this.getCurrentEpisode().title !== "" ? `${this.getCurrentEpisode().title}` : `Episode ${this.state.episode}` : null}</h1>
                 </div>
-                <div id="series-menu-lists">
+                <div id={"series-menu-lists"}>
                     <div id="series-season-list">
                         <h1>Season</h1>
                         <List id="series-season-list-list">
@@ -174,6 +175,32 @@ class Series extends Component{
                         </List>
                     </div>
                 </div>
+                {/*<table id={"series-menu-lists"}>*/}
+                {/*    <tablebody>*/}
+                {/*        <tr>*/}
+                {/*            <th>*/}
+                {/*                <div id="series-season-list">*/}
+                {/*                    <h1>Season</h1>*/}
+                {/*                    <List id="series-season-list-list">*/}
+                {/*                        {this.state.seriesInfo !== null ? this.state.seriesInfo.seasons.map((season, index) =>*/}
+                {/*                            this.renderSeasonRow({index: index, style: null}, [null, undefined, ""].includes(season.title) ? "Season" : season.title, [null, undefined, ""].includes(season.title))*/}
+                {/*                        ) : null}*/}
+                {/*                    </List>*/}
+                {/*                </div>*/}
+                {/*            </th>*/}
+                {/*            <th>*/}
+                {/*                <div id="series-episode-list">*/}
+                {/*                    <h1>Episode</h1>*/}
+                {/*                    <List id="series-episode-list-list">*/}
+                {/*                        {this.state.seriesInfo !== null ? Array.from(Array(this.episodeCount(this.state.season)).keys()).map((value, index) =>*/}
+                {/*                            this.renderEpisodeRow({index: value, style: null}, "Episode")*/}
+                {/*                        ) : null}*/}
+                {/*                    </List>*/}
+                {/*                </div>*/}
+                {/*            </th>*/}
+                {/*        </tr>*/}
+                {/*    </tablebody>*/}
+                {/*</table>*/}
             </div>
         );
     }
