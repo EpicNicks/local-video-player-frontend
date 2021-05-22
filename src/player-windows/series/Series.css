@@ -20,11 +20,14 @@
 
 #series-season-list{
     flex: 1;
+    margin-left: 0.25vw;
 }
 
 #series-season-list h1{
     font-size: 1.3vw;
     text-decoration-line: underline;
+    text-align: left;
+    margin-left: 0.25vw;
 }
 
 #series-episode-list{
@@ -34,10 +37,12 @@
 #series-episode-list h1{
     font-size: 1.3vw;
     text-decoration-line: underline;
+    text-align: left;
+    margin-left: 0.0vw;
 }
 
 #series-season-list-list {
-    min-width: 5vw;
+    min-width: 4.75vw;
     /*transform: translate(2.5vw);*/
     max-height: 50vh;
 }
