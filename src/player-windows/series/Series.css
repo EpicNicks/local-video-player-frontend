@@ -37,14 +37,14 @@
 }
 
 #series-season-list-list {
-    min-width: 10vw;
-    transform: translate(2.5vw);
+    min-width: 5vw;
+    /*transform: translate(2.5vw);*/
     max-height: 50vh;
 }
 
 #series-episode-list-list {
     min-width: 10vw;
-    transform: translate(2.5vw);
+    /*transform: translate(2.5vw);*/
     max-height: 50vh;
     overflow: auto;
 }
