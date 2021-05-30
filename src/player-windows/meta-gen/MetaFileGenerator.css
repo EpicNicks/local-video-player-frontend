@@ -9,20 +9,26 @@
     padding-top: 20px;
 }
 
-#meta-gen-series-top{
+#meta-gen-series-container{
     display: flex;
     flex-direction: row;
+}
+
+#meta-gen-series-top{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     justify-content: space-evenly;
     width: 100%;
     padding: 0;
 }
 
 #meta-gen-series-loader{
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: relative;
-    flex: 0 1 auto;
+    transform: translate(0);
 }
 
 #meta-gen-series-middle{

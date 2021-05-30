@@ -5,10 +5,12 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
+import { Switch as FlipSwitch } from "@material-ui/core";
 
 import { SERVER_PATH } from '../../global/globals';
-
 import './MainMenu.css';
+
+import {getTheme, setTheme} from "../../styles/themes";
 
 class MainMenu extends Component{
 
@@ -42,7 +44,7 @@ class MainMenu extends Component{
 
     constructor(props) {
         super(props)
-        this.state = {apiResponse: "not overwritten", titles: []};
+        this.state = { apiResponse: "not overwritten", titles: [] };
     }
 
     componentDidMount() {
@@ -70,6 +72,14 @@ class MainMenu extends Component{
                         variant="contained"
                         onClick={() => {this.props.history.push("/meta-gen")}}
                     >Generate Meta Files</Button>
+                    <FlipSwitch
+                        onChange={() =>
+                        {
+                            setTheme("DARK");
+                            console.log(getTheme().main)
+                            this.forceUpdate();
+                        }}
+                    />
                 </Grid>
             </div>
         )

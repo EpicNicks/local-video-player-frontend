@@ -260,7 +260,7 @@ export default class MetaGen extends Component{
             )
         else
             return (
-                <div id="meta-gen-series-top">
+                <div id="meta-gen-series-container">
                     <div id="meta-gen-series-loader">
                         <button
                             onClick={() => this.loadEpisodes()}
@@ -285,85 +285,87 @@ export default class MetaGen extends Component{
                         >
                         </input>
                     </div>
-                    <div id="meta-gen-series-middle">
-                        <h1>.seriesn generation</h1>
-                        <div className="meta-textfields">
-                            <TextField
-                                id="standard-basic"
-                                label="title"
-                                key="series-title"
-                                onChange={e => this.setState({ title: e.target.value })}
-                                value={this.state.title}
-                            />
-                            <br/>
-                            <TextField
-                                id="standard-basic"
-                                label="genre"
-                                key="series-genre"
-                                onChange={e => this.setState({ genre: e.target.value.split(',').map(v => v.trim()) })}
-                                value={this.state.genre.join(", ")}
-                            />
-                            <br/>
-                            <TextField
-                                id="standard-basic"
-                                label="seasons (number)"
-                                type="number"
-                                onChange={e => {
-                                    if (parseInt(e.target.value) < 0){
-                                        e.target.value = "0";
-                                    }
-                                    this.seasons.length = parseInt(e.target.value);
-                                    this.forceUpdate();
-                                }}
-                                value={this.seasons.length}
-                            />
-                            <br/>
-                            <div id="meta-gen-episode-entry">
-                                {this.seasons.length > 0 ?
-                                    <List>
-                                        {this.generateSeasonRows()}
-                                    </List>
-                                    : null }
-                                {this.state.selectedIndex < this.seasons.length
-                                    ?   <div>
-                                        <TextField
-                                            id="standard-basic"
-                                            value={this.seasons[this.state.season - 1]?.title}
-                                            label={`Season ${this.state.season} title`}
-                                            InputLabelProps={{shrink: true}}
-                                            onChange={e => {
-                                                this.seasons[this.state.season - 1].title = e.target.value;
-                                                this.forceUpdate();
-                                            }}
-                                        />
-                                        <br/>
-                                        <TextField
-                                            type="number"
-                                            id="standard-basic"
-                                            value={this.seasons[this.state.season - 1]?.episodes?.length}
-                                            label={`Season ${this.state.season} Episode Count`}
-                                            InputLabelProps={{shrink: true}}
-                                            onChange={ e => {
-                                                if (parseInt(e.target.value) < 0)
-                                                    e.target.value = "0";
-                                                if ([null, undefined].includes(this.seasons[this.state.season - 1])){
-                                                    this.seasons[this.state.season - 1] = {title: "", episodes: []}
+                    <div id="meta-gen-series-top">
+                        <div id="meta-gen-series-middle">
+                            <h1>.seriesn generation</h1>
+                            <div className="meta-textfields">
+                                <TextField
+                                    id="standard-basic"
+                                    label="title"
+                                    key="series-title"
+                                    onChange={e => this.setState({ title: e.target.value })}
+                                    value={this.state.title}
+                                />
+                                <br/>
+                                <TextField
+                                    id="standard-basic"
+                                    label="genre"
+                                    key="series-genre"
+                                    onChange={e => this.setState({ genre: e.target.value.split(',').map(v => v.trim()) })}
+                                    value={this.state.genre.join(", ")}
+                                />
+                                <br/>
+                                <TextField
+                                    id="standard-basic"
+                                    label="seasons (number)"
+                                    type="number"
+                                    onChange={e => {
+                                        if (parseInt(e.target.value) < 0){
+                                            e.target.value = "0";
+                                        }
+                                        this.seasons.length = parseInt(e.target.value);
+                                        this.forceUpdate();
+                                    }}
+                                    value={this.seasons.length}
+                                />
+                                <br/>
+                                <div id="meta-gen-episode-entry">
+                                    {this.seasons.length > 0 ?
+                                        <List>
+                                            {this.generateSeasonRows()}
+                                        </List>
+                                        : null }
+                                    {this.state.selectedIndex < this.seasons.length
+                                        ?   <div>
+                                            <TextField
+                                                id="standard-basic"
+                                                value={this.seasons[this.state.season - 1]?.title}
+                                                label={`Season ${this.state.season} title`}
+                                                InputLabelProps={{shrink: true}}
+                                                onChange={e => {
+                                                    this.seasons[this.state.season - 1].title = e.target.value;
+                                                    this.forceUpdate();
+                                                }}
+                                            />
+                                            <br/>
+                                            <TextField
+                                                type="number"
+                                                id="standard-basic"
+                                                value={this.seasons[this.state.season - 1]?.episodes?.length}
+                                                label={`Season ${this.state.season} Episode Count`}
+                                                InputLabelProps={{shrink: true}}
+                                                onChange={ e => {
+                                                    if (parseInt(e.target.value) < 0)
+                                                        e.target.value = "0";
+                                                    if ([null, undefined].includes(this.seasons[this.state.season - 1])){
+                                                        this.seasons[this.state.season - 1] = {title: "", episodes: []}
+                                                        this.seasons[this.state.season - 1].episodes = Array(parseInt(e.target.value));
+                                                    }
+                                                    console.log(this.seasons[this.state.season - 1].episodes);
                                                     this.seasons[this.state.season - 1].episodes = Array(parseInt(e.target.value));
-                                                }
-                                                console.log(this.seasons[this.state.season - 1].episodes);
-                                                this.seasons[this.state.season - 1].episodes = Array(parseInt(e.target.value));
-                                                this.forceUpdate();
-                                            }}
-                                        />
-                                    </div>: null
-                                }
-                                {this.seasons[this.state.season - 1]?.episodes?.length > 0
-                                    ?
-                                    <div id="meta-gen-episode-fields">
-                                        {this.episodeFieldGen()}
-                                    </div>
-                                    : null
-                                }
+                                                    this.forceUpdate();
+                                                }}
+                                            />
+                                        </div>: null
+                                    }
+                                    {this.seasons[this.state.season - 1]?.episodes?.length > 0
+                                        ?
+                                        <div id="meta-gen-episode-fields">
+                                            {this.episodeFieldGen()}
+                                        </div>
+                                        : null
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
