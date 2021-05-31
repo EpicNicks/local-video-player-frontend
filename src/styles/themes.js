@@ -1,7 +1,7 @@
-import {createMuiTheme} from "@material-ui/core";
+import {createMuiTheme, makeStyles} from "@material-ui/core";
 
 export const defaultTheme = {
-    main: theme => ({ root: {}}),
+    main: theme => makeStyles({ root: {}}),
     mui: createMuiTheme({})
 }
 
@@ -15,8 +15,20 @@ export const customTheme = {
     })
 }
 
+export const defaultThemeInline = {
+
+}
+
+export const darkThemeInline = {
+    mainMenu: {
+        backgroundColor: "#000",
+        color: "#0FF",
+        height: "100vh",
+    }
+}
+
 export const darkTheme = {
-    main: theme => ({
+    main: theme => makeStyles({
         root: {
             backgroundColor: "#000",
             color: "#0FF",
@@ -65,7 +77,31 @@ export const darkTheme = {
                 default: "#333",
                 paper: "#181818",
             }
-        }
+        },
+        "& .MuiListItem-root": {
+            backgroundColor: '#141414',
+            '&:hover': {
+                color: "black",
+                backgroundColor: "#0FF"
+            }
+        },
+        '& h1': {
+            color: "#0FF",
+        },
+        '& label.Mui-focused': {
+            color: '#0FF',
+        },
+        '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+                borderColor: '#0FF',
+            },
+            '&:hover fieldset': {
+                borderColor: '#F0F',
+            },
+            '&.Mui-focused fieldset': {
+                borderColor: '#0FF',
+            }
+        },
     })
 };
 

@@ -4,9 +4,34 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+
+import { defaultTheme, darkTheme } from './styles/themes'
+
+const initialState = {
+    theme: defaultTheme,
+    useCustomTheme: true
+};
+const store = createStore((state=initialState, action) => {
+    switch (action.type){
+        case "SET_THEME_DARK": {
+            console.log("setting to dark theme from dispatch")
+            return { ...state, theme: darkTheme }
+        }
+        case "SET_THEME_DEFAULT": {
+            console.log("setting to default theme from dispatch")
+            return { ...state, theme: defaultTheme }
+        }
+        default: return state;
+    }
+});
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+        <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

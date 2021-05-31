@@ -1,20 +1,23 @@
 
-import React, { Component } from 'react';
+import React, {Component, useEffect, useState} from 'react';
 
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
-import { Switch as FlipSwitch } from "@material-ui/core";
+import { Switch as FlipSwitch, ThemeProvider } from "@material-ui/core";
+import { connect } from "react-redux";
 
 import { SERVER_PATH } from '../../global/globals';
 import './MainMenu.css';
+import {darkTheme, darkThemeInline, defaultTheme} from "../../styles/themes";
 
-import {getTheme, setTheme} from "../../styles/themes";
+const MainMenu = (props) => {
 
-class MainMenu extends Component{
+    const [apiResponse, setApiResponse] = useState("not overwritten");
+    const [titles, setTitles] = useState([]);
 
-    async loadTitles(){
+    const loadTitles = async() => {
         const titles = [];
         let response;
         await fetch(`http://${SERVER_PATH}/videoTitles`)
@@ -30,7 +33,9 @@ class MainMenu extends Component{
         return titles;
     }
 
-    requestVideo(metadata){
+    useEffect(() => loadTitles().then(res => setTitles(res)), []);
+
+    const requestVideo = (metadata) => {
         if (metadata.type === "movie"){
             this.props.history.push(`./Movie?title=${metadata.title}`)
         }
@@ -42,20 +47,8 @@ class MainMenu extends Component{
         }
     }
 
-    constructor(props) {
-        super(props)
-        this.state = { apiResponse: "not overwritten", titles: [] };
-    }
-
-    componentDidMount() {
-        this.loadTitles()
-            .then(res => {
-                this.setState({ titles: res})
-            });
-    }
-
-    render(){
-        return(
+    return(
+        <ThemeProvider theme={this.props.theme.mui}>
             <div id="main-menu">
                 <Grid container direction="column" alignItems="center" justify="center">
                     <h1>Local Video Player Main Menu</h1>
@@ -73,17 +66,25 @@ class MainMenu extends Component{
                         onClick={() => {this.props.history.push("/meta-gen")}}
                     >Generate Meta Files</Button>
                     <FlipSwitch
+                        checked={this.state.checked}
                         onChange={() =>
                         {
-                            setTheme("DARK");
-                            console.log(getTheme().main)
-                            this.forceUpdate();
+                            if (this.props.theme === defaultTheme ) {
+                                this.props.dispatch({type: "SET_THEME_DARK"})
+                                console.log("changing theme to dark");
+                                this.setState({checked: !this.state.checked});
+                            }
+                            else{
+                                this.props.dispatch({ type: "SET_THEME_DEFAULT" })
+                                console.log("changing theme to default");
+                                this.setState({checked: !this.state.checked});
+                            }
                         }}
                     />
                 </Grid>
             </div>
-        )
-    }
+        </ThemeProvider>
+    )
 }
 
-export default MainMenu;
+export default connect(state => ({ theme: state.theme }))(MainMenu);
