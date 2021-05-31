@@ -13,8 +13,6 @@ import './MainMenu.css';
 import {darkTheme, darkThemeInline, defaultTheme} from "../../styles/themes";
 
 const MainMenu = (props) => {
-
-    const [apiResponse, setApiResponse] = useState("not overwritten");
     const [titles, setTitles] = useState([]);
 
     const loadTitles = async() => {
@@ -37,10 +35,10 @@ const MainMenu = (props) => {
 
     const requestVideo = (metadata) => {
         if (metadata.type === "movie"){
-            this.props.history.push(`./Movie?title=${metadata.title}`)
+            props.history.push(`./Movie?title=${metadata.title}`)
         }
         else if(metadata.type === "series"){
-            this.props.history.push(`./Series?title=${metadata.title}`);
+            props.history.push(`./Series?title=${metadata.title}`);
         }
         else{
             console.error("json.type was " + metadata.type + ", and not 'movie' or 'series' as expected");
@@ -48,36 +46,33 @@ const MainMenu = (props) => {
     }
 
     return(
-        <ThemeProvider theme={this.props.theme.mui}>
+        <ThemeProvider theme={props.theme.mui}>
             <div id="main-menu">
                 <Grid container direction="column" alignItems="center" justify="center">
                     <h1>Local Video Player Main Menu</h1>
                     <Autocomplete
                         autoHighlight
                         renderInput={(params) => <TextField {...params} label="Search" variant="outlined"/>}
-                        options={this.state.titles}
+                        options={titles}
                         getOptionLabel={option => option.title}
                         style={{ width: "60%" }}
-                        onChange={(event, newValue) => {this.requestVideo(newValue)}}
+                        onChange={(event, newValue) => {requestVideo(newValue)}}
                     />
                     <Button
                         id="meta-gen-btn"
                         variant="contained"
-                        onClick={() => {this.props.history.push("/meta-gen")}}
+                        onClick={() => {props.history.push("/meta-gen")}}
                     >Generate Meta Files</Button>
                     <FlipSwitch
-                        checked={this.state.checked}
                         onChange={() =>
                         {
-                            if (this.props.theme === defaultTheme ) {
-                                this.props.dispatch({type: "SET_THEME_DARK"})
+                            if (props.theme === defaultTheme ) {
+                                props.dispatch({type: "SET_THEME_DARK"})
                                 console.log("changing theme to dark");
-                                this.setState({checked: !this.state.checked});
                             }
                             else{
-                                this.props.dispatch({ type: "SET_THEME_DEFAULT" })
+                                props.dispatch({ type: "SET_THEME_DEFAULT" })
                                 console.log("changing theme to default");
-                                this.setState({checked: !this.state.checked});
                             }
                         }}
                     />
