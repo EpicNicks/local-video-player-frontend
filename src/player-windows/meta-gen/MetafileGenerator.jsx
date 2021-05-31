@@ -28,39 +28,29 @@ const MetaGen = (props) => {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [fileUploadHidden, setFileUploadHidden] = useState(true);
 
-    const [changed, setChanged] = useState(false);
-
-    const loadEpisodes = () => {
-        if (!["", null, undefined].includes(title))
-            fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_KEY}&query=${encodeURIComponent(title)}`)
-                .then(res => res.text())
-                .then(res => {
-                    console.log(res);
-                    const results = JSON.parse(res).results[0];
-                    const id = results.id;
-                    fetchEpisodes(id);
-                })
-                .catch(err => console.error(err));
-    };
-
-    const fetchEpisodes = id => {
-        if (id !== null){
-            const request = `https://api.themoviedb.org/3/tv/${id}/season/${season}?api_key=${TMDB_KEY}`;
-            console.log(request);
-            fetch(request)
-                .then(res => res.text())
-                .then(res => {
-                    const obj = JSON.parse(res)
-                    console.log("parsed obj:", obj);
-                    if ([null, undefined].includes(seasons[season - 1]))
-                        setSeasons(ssn => apply(ssn, s => s[season - 1] = { title: "", episodes: [] }));
-                    setSeasons(ssn => apply(ssn, s => s[season - 1].episodes.length = obj.episodes.length));
-                    for (let i = 0; i < obj.episodes.length; i++){
-                        if ([null, undefined].includes(seasons[season - 1].episodes[i]))
-                            setSeasons(ssn => apply(ssn, s => s[season - 1].episodes[i] = {title: "", path: "", episode: 0}));
-                        setSeasons(ssn => apply(ssn, s => s[season - 1].episodes[i] = {...s[season - 1].episodes[i], title: obj.episodes[i].name, episode: obj.episodes[i].episode_number}));
-                    }
-                });
+    const loadEpisodes = async() => {
+        if (!["", null, undefined].includes(title)) {
+            const response = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_KEY}&query=${encodeURIComponent(title)}`);
+            const text = await response.text();
+            console.log(text);
+            const results = JSON.parse(text).results[0];
+            const id = results.id;
+            if (id !== null){
+                const request = `https://api.themoviedb.org/3/tv/${id}/season/${season}?api_key=${TMDB_KEY}`;
+                console.log(request);
+                const response = await fetch(request);
+                const text = await response.text();
+                const obj = JSON.parse(text);
+                console.log("parsed obj:", obj);
+                if ([null, undefined].includes(seasons[season - 1]))
+                    setSeasons(ssn => apply(ssn, s => s[season - 1] = { title: "", episodes: [] }));
+                setSeasons(ssn => apply(ssn, s => s[season - 1].episodes.length = obj.episodes.length));
+                for (let i = 0; i < obj.episodes.length; i++){
+                    if ([null, undefined].includes(seasons[season - 1].episodes[i]))
+                        setSeasons(ssn => apply(ssn, s => s[season - 1].episodes[i] = {title: "", path: "", episode: 0}));
+                    setSeasons(ssn => apply(ssn, s => s[season - 1].episodes[i] = {...s[season - 1].episodes[i], title: obj.episodes[i].name, episode: obj.episodes[i].episode_number}));
+                }
+            }
         }
     };
 
@@ -271,7 +261,11 @@ const MetaGen = (props) => {
                                     onChange={e => {
                                         if (parseInt(e.target.value) < 0 || isNaN(parseInt(e.target.value)))
                                             e.target.value = "0";
-                                        setSeasons(ssn => apply(ssn, s => s.length = parseInt(e.target.value)));
+                                        setSeasons(s => {
+                                            const newSeasons = Array(parseInt(e.target.value));
+                                            seasons.forEach((v, i) => newSeasons[i] = v);
+                                            return newSeasons;
+                                        });
                                     }}
                                     value={seasons.length}
                                 />
@@ -373,8 +367,8 @@ const MetaGen = (props) => {
                             x.send();
                             URL.revokeObjectURL(u);
                             const blob = new Blob([x.responseText], {type: 'text/plain'});
-                            blob.text().then(t => {
-                                const obj = JSON.parse(t);
+                            (async() =>{
+                                const obj = JSON.parse(await blob.text());
                                 if (obj.type === "movie"){
                                     console.log("movie uploaded");
                                     setTitle(obj.title);
@@ -391,7 +385,7 @@ const MetaGen = (props) => {
                                     setPath(obj.path);
                                     setSeasons(obj.seasons);
                                 }
-                            });
+                            })();
                         }}
                     >
                     </input>
