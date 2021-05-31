@@ -50,6 +50,8 @@ const MetaGen = (props) => {
                         setSeasons(ssn => apply(ssn, s => s[season - 1].episodes[i] = {title: "", path: "", episode: 0}));
                     setSeasons(ssn => apply(ssn, s => s[season - 1].episodes[i] = {...s[season - 1].episodes[i], title: obj.episodes[i].name, episode: obj.episodes[i].episode_number}));
                 }
+                // this is the only line that requires an actual new object since at least some season manipulation will have happened
+                setSeasons(s => [...s]);
             }
         }
     };
@@ -67,6 +69,8 @@ const MetaGen = (props) => {
                 setSeasons(ssn => apply(ssn, s => s[season - 1].episodes[i] = {path: "", episode: 0, title: ""}))
             setSeasons(ssn => apply(ssn, s => s[season - 1].episodes[i].path = paths[i]));
         }
+        // this is the only line that requires an actual new object since at least some season manipulation will have happened
+        setSeasons(s => [...s]);
     };
 
     const generateJSON = () => {
