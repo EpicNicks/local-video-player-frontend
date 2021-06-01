@@ -61,11 +61,11 @@ const MetaGen = (props) => {
             setSeasons(ssn => apply(ssn, s => s[season - 1] = { title: "", episodes: []}))
         }
         if (seasons[season - 1].episodes.length < paths.length)
-            setSeasons(ssn => apply(ssn, s => s.episodes.length = paths.length));
+            setSeasons(ssn => apply(ssn, s => s[season - 1].episodes.length = paths.length));
         console.log(seasons[season - 1].episodes);
         console.log(paths);
         for (let i = 0; i < paths.length; i++) {
-            if ([null, undefined].includes(season.episodes[i]))
+            if ([null, undefined].includes(seasons[season - 1].episodes[i]))
                 setSeasons(ssn => apply(ssn, s => s[season - 1].episodes[i] = {path: "", episode: 0, title: ""}))
             setSeasons(ssn => apply(ssn, s => s[season - 1].episodes[i].path = paths[i]));
         }

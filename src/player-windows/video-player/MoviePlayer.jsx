@@ -1,5 +1,5 @@
 
-import React, { Component } from 'react';
+import React, {useEffect, useState, useRef, useCallback } from 'react';
 import videoJS from 'video.js';
 import 'video.js/dist/video-js.css'
 
@@ -8,75 +8,68 @@ import 'videojs-mobile-ui/dist/videojs-mobile-ui.css'
 
 import './MoviePlayer.css'
 
-class MoviePlayer extends Component{
+const apply = (x, f) => {
+    f(x);
+    return x;
+};
 
-    componentDidMount() {
-        this.player = videoJS(this.videoNode, this.props, function OnPlayerReady(){
+const MoviePlayer = (props) => {
+
+    const videoNode = useRef();
+    const player = useRef()
+
+    useEffect(() => { //componentDidMount
+        player.current = videoJS(videoNode.current, props, function OnPlayerReady(){
             console.log('OnPlayerReady', this);
         });
-        this.player.mobileUi(
-            {
-                fullscreen:
-                    { enterOnRotate:true, exitOnRotate:true, lockOnRotate:false },
-                touchControls:
-                    { seekSeconds: 5, tapTimeout: 300, disableOnEnd: false }
+        player.current.mobileUi = {
+            fullscreen:
+                { enterOnRotate:true, exitOnRotate:true, lockOnRotate:false },
+            touchControls:
+                { seekSeconds: 5, tapTimeout: 300, disableOnEnd: false }
+        };
+
+        if (videoNode.current){
+            videoNode.current.addEventListener('keydown', e => {
+                if (e.key === "ArrowRight")
+                    videoNode.current.currentTime = videoNode.current.currentTime + 5;
+                if (e.key === "ArrowLeft")
+                    videoNode.current.currentTime = videoNode.current.currentTime - 5;
+                if (e.key === "f")
+                    document.querySelector(".vjs-fullscreen-control").click();
+                if (e.key === " ")
+                    if (videoNode.current.paused){
+                        videoNode.current.play();
+                    }
+                    else{
+                        videoNode.current.pause();
+                    }
             });
-
-        this.videoNode.addEventListener('keydown', e => {
-            if (e.key === "ArrowRight")
-                this.videoNode.currentTime = this.videoNode.currentTime + 5;
-            if (e.key === "ArrowLeft")
-                this.videoNode.currentTime = this.videoNode.currentTime - 5;
-            if (e.key === "f")
-                document.querySelector(".vjs-fullscreen-control").click();
-            if (e.key === " " && !this.videoNode.webkitDisplayingFullscreen)
-                if (this.videoNode.paused){
-                    this.videoNode.play();
-                    console.log("paused after play: ", this.videoNode.paused);
-                }
-                else{
-                    this.videoNode.pause();
-                }
-        });
-        window.addEventListener('orientationchange', () => {
-            const orientation = window.screen.orientation;
-            console.log(`orientation changed to ${orientation.type}`)
-            if (orientation.type === "landscape-primary" || orientation.type === "landscape-secondary"){
-                //nothing seems to work to enter fullscreen
-            }
-            else{
-                if (document.fullscreenElement !== null){
-                    document.exitFullscreen();
-                }
-            }
-        });
-        //instant focus on autoplay -> never lose focus
-        this.videoNode.addEventListener('play', () => this.videoNode?.focus());
-        this.videoNode.addEventListener('focusout', () => this.videoNode?.focus());
-
-        for (const key in this.props.extraEvents){
-            this.player.on(key.toString().toLowerCase(), () => this.props.extraEvents[key](this.player));
+            // instant focus on autoplay -> never lose focus
+            videoNode.current.addEventListener('play', () => videoNode.current?.focus());
+            videoNode.current.addEventListener('focusout', () => videoNode.current?.focus());
         }
-    }
 
-    componentWillUnmount() {
-        if (this.player)
-            this.player.dispose();
-    }
+        for (const key in props.extraEvents){
+            player.current.on(key.toString().toLowerCase(), () => props.extraEvents[key](player));
+        }
+        return () => { //componentWillUnmount
+            if (player.current)
+                player.current.dispose();
+        };
+    }, [props.key]);
 
-    render() {
-        return(
-            <div>
-                <div data-vjs-player>
-                    <video
-                        ref={ node => this.videoNode = node }
-                        className="video-js vjs-default-skin vjs-16-9"
-                    >
-                    </video>
-                </div>
+    return(
+        <div>
+            <div data-vjs-player key={props.key}>
+                <video
+                    ref={ videoNode }
+                    className="video-js vjs-default-skin vjs-16-9"
+                >
+                </video>
             </div>
-        )
-    }
+        </div>
+    )
 }
 
 export default MoviePlayer;
