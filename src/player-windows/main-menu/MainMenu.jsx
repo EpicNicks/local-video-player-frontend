@@ -10,7 +10,8 @@ import { Switch as FlipSwitch } from "@material-ui/core";
 import { SERVER_PATH } from '../../global/globals';
 import './MainMenu.css';
 
-import {getTheme, setTheme} from "../../styles/themes";
+import { darkMode, lightMode, setStyles, jsonToCssString } from "../../styles/StylesManagement";
+import {light} from "@material-ui/core/styles/createPalette";
 
 class MainMenu extends Component{
 
@@ -44,7 +45,7 @@ class MainMenu extends Component{
 
     constructor(props) {
         super(props)
-        this.state = { apiResponse: "not overwritten", titles: [] };
+        this.state = { apiResponse: "not overwritten", titles: [], theme: lightMode };
     }
 
     componentDidMount() {
@@ -75,9 +76,14 @@ class MainMenu extends Component{
                     <FlipSwitch
                         onChange={() =>
                         {
-                            setTheme("DARK");
-                            console.log(getTheme().main)
-                            this.forceUpdate();
+                            // setTheme("DARK");
+                            // console.log(getTheme().main)
+                            // this.forceUpdate();
+                            const theme = this.state.theme === lightMode ? darkMode : lightMode
+                            const style = jsonToCssString(theme)
+                            console.log(style)
+                            setStyles(style)
+                            this.setState({ theme })
                         }}
                     />
                 </Grid>
