@@ -1,60 +1,86 @@
-import './Series.css';
+import './Series.css'
 
-import React, { Component } from 'react';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+import React, { Component } from 'react'
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
 
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import List from '@material-ui/core/List';
+import ListItem from "@material-ui/core/ListItem"
+import ListItemText from "@material-ui/core/ListItemText"
+import List from '@material-ui/core/List'
 
-import {SERVER_PATH} from "../../global/globals";
-import MoviePlayer from "../video-player/MoviePlayer";
+import {SERVER_PATH} from "../../global/globals"
+import MoviePlayer from "../video-player/MoviePlayer"
 
 let videoJS = null
 
 class Series extends Component{
 
+    getLastPlayedEpisode = () => {
+        if (typeof(Storage)){
+            const lastPlayedData = localStorage.getItem(`${this.state.title}`)
+            if (lastPlayedData){
+                const lastPlayed = lastPlayedData.split(",")
+                return {
+                    season: Number.parseInt(lastPlayed[0]),
+                    episode: Number.parseInt(lastPlayed[1])
+                }
+            }
+        }
+        return {
+            season: 1,
+            episode: 1
+        }
+    }
+
+    setLastPlayedEpisode = (season, episode) => {
+        if (typeof(Storage)){
+            localStorage.setItem(`${this.state.title}`, `${season},${episode}`)
+        }
+    }
+
     updateVideo = (season, episode) => {
-        const src = `http://${SERVER_PATH}/seriesVideoAPI?title=${encodeURIComponent(this.state.title)}&season=${season}&episode=${episode}`;
+        const src = `http://${SERVER_PATH}/seriesVideoAPI?title=${encodeURIComponent(this.state.title)}&season=${season}&episode=${episode}`
         this.setState({
             season,
             episode,
             src: src,
             selectedIndex: episode - 1,
             selectedSeasonIndex: season - 1
-        });
+        })
         if (videoJS !== null && videoJS !== undefined){
-            videoJS?.pause();
-            videoJS?.src({src, type: 'video/mp4'});
-            videoJS?.play();
+            console.log("setting src", src)
+            videoJS?.pause()
+            // todo: add support for other filetypes
+            videoJS?.src({src, type: 'video/mp4'})
+            videoJS?.play()
         }
+        this.setLastPlayedEpisode(season, episode)
     }
 
     getTitle = () => {
-        const search = this.props.location.search;
-        const title = new URLSearchParams(search).get("title");
-        return title;
+        const search = this.props.location.search
+        const title = new URLSearchParams(search).get("title")
+        return title
     }
 
     episodeCount = (season) =>
         this.state.seriesInfo !== null
             ? this.state.seriesInfo.seasons[season - 1].episodes.length
-            : 0;
+            : 0
 
     selectSeason = (index) =>{
         // no need to reload if season is the same
         if (this.state.season !== index + 1){
-            this.setState({selectedSeasonIndex: index, selectedIndex: 0, season: index + 1});
-            this.updateVideo(index + 1, 1);
+            this.setState({selectedSeasonIndex: index, selectedIndex: 0, season: index + 1})
+            this.updateVideo(index + 1, 1)
         }
     }
 
     renderSeasonRow = (props, labelString, useNumber) => {
-        const { index, style } = props;
-        const selectedIndex = this.state.selectedSeasonIndex;
+        const { index, style } = props
+        const selectedIndex = this.state.selectedSeasonIndex
         return(
             <ListItem
                 button
@@ -68,12 +94,12 @@ class Series extends Component{
     }
 
     selectEpisode = (index) => {
-        this.updateVideo(this.state.season, index + 1);
+        this.updateVideo(this.state.season, index + 1)
     }
 
     renderEpisodeRow = (props, labelString) => {
-        const { index, style } = props;
-        const selectedIndex = this.state.selectedIndex;
+        const { index, style } = props
+        const selectedIndex = this.state.selectedIndex
         return(
             <ListItem
                 button
@@ -91,18 +117,18 @@ class Series extends Component{
         fetch(`http://${SERVER_PATH}/videoInfoAPI/?title=${this.state.title}`)
             .then(res => res.text())
             .then(res => {
-                const response = JSON.parse(res);
-                this.setState({ seriesInfo: response });
+                const response = JSON.parse(res)
+                this.setState({ seriesInfo: response })
             })
-            .catch(err => err);
+            .catch(err => err)
     }
 
-    getEpisode = (season, episode) => this.state.seriesInfo.seasons[season - 1].episodes[episode - 1];
-    getCurrentEpisode = () => this.getEpisode(this.state.season, this.state.episode);
+    getEpisode = (season, episode) => this.state.seriesInfo.seasons[season - 1].episodes[episode - 1]
+    getCurrentEpisode = () => this.getEpisode(this.state.season, this.state.episode)
 
     constructor(props) {
-        super(props);
-        const title = this.getTitle();
+        super(props)
+        const title = this.getTitle()
         this.state = {
             title: title,
             season: 1,
@@ -111,16 +137,17 @@ class Series extends Component{
             seriesInfo: null,
             selectedIndex: 0,
             selectedSeasonIndex: 0
-        };
+        }
     }
 
     componentDidMount() {
-        this.updateVideo(this.state.season, this.state.episode);
-        this.getSeriesInfo();
+        const { season, episode } = this.getLastPlayedEpisode()
+        this.updateVideo(season, episode)
+        this.getSeriesInfo()
     }
 
     componentWillUnmount() {
-        videoJS = null;
+        videoJS = null
     }
 
     videoJsOptions = () => {
@@ -132,20 +159,25 @@ class Series extends Component{
                 src: this.state.src,
                 type: 'video/mp4'
             }],
-            //my injection
+            //my injections
             extraEvents: {
-                ended: () =>{
+                ended: () => {
                     if (this.state.episode < this.episodeCount(this.state.season)){
                         this.updateVideo(this.state.season, this.state.episode + 1)
                     }
                 },
-                play: (vjs) => {
-                    videoJS = vjs;
-                    console.log("start:inner");
+                play: () => {
+                    console.log("start:inner")
                 }
-            }
+            },
+            loadComplete: (vjs) => {
+                videoJS = vjs
+                console.log("load complete", videoJS)
+                const { season, episode } = this.getLastPlayedEpisode()
+                this.updateVideo(season, episode)
+            },
         }
-    };
+    }
 
     render() {
         return (
@@ -202,8 +234,8 @@ class Series extends Component{
                 {/*    </tablebody>*/}
                 {/*</table>*/}
             </div>
-        );
+        )
     }
 }
 
-export default Series;
+export default Series
