@@ -13,7 +13,7 @@ export const jsonToCssString = style => {
 export const setStyles = (cssString) => {
     const style = document.createElement('style')
     style.textContent = cssString
-    document.head.append(style)
+    document.head.appendChild(style)
 }
 
 export const darkMode = {

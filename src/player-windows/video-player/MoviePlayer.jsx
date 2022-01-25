@@ -57,7 +57,9 @@ class MoviePlayer extends Component{
         for (const key in this.props.extraEvents){
             this.player.on(key.toString().toLowerCase(), () => this.props.extraEvents[key](this.player))
         }
-        this.props.loadComplete(this.player)
+        if (this.props.loadComplete){
+            this.props.loadComplete(this.player)
+        }
     }
 
     componentWillUnmount() {
