@@ -154,7 +154,7 @@ class Series extends Component{
         return {
             controls: true,
             autoplay: true,
-            playbackRates: [0.5, 1, 1.5, 2],
+            playbackRates: [0.5, 0.75, 1, 1.25, 1.5, 2],
             sources: [{
                 src: this.state.src,
                 type: 'video/mp4'
@@ -170,8 +170,8 @@ class Series extends Component{
                     console.log("start:inner")
                 }
             },
-            loadComplete: (vjs) => {
-                videoJS = vjs
+            loadComplete: (moviePlayer) => {
+                videoJS = moviePlayer.player
                 console.log("load complete", videoJS)
                 const { season, episode } = this.getLastPlayedEpisode()
                 this.updateVideo(season, episode)

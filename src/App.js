@@ -11,8 +11,6 @@ import MetafileGenerator from "./player-windows/meta-gen/MetafileGenerator";
 class App extends Component{
     render(){
 
-        //TODO: modify the styles by accessing and modifying the css
-        //ex:
         return (
                 <div className={`App`}>
                     <HashRouter basename={""}>

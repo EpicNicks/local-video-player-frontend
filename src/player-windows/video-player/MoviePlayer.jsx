@@ -29,13 +29,14 @@ class MoviePlayer extends Component{
                 this.videoNode.currentTime = this.videoNode.currentTime - 5
             if (e.key === "f")
                 document.querySelector(".vjs-fullscreen-control").click()
-            if (e.key === " " && !this.videoNode.webkitDisplayingFullscreen)
+            if (e.key === " ")
                 if (this.videoNode.paused){
                     this.videoNode.play()
                     console.log("paused after play: ", this.videoNode.paused)
                 }
                 else{
                     this.videoNode.pause()
+                    console.log("paused after play: ", this.videoNode.paused)
                 }
         })
         window.addEventListener('orientationchange', () => {
@@ -58,13 +59,19 @@ class MoviePlayer extends Component{
             this.player.on(key.toString().toLowerCase(), () => this.props.extraEvents[key](this.player))
         }
         if (this.props.loadComplete){
-            this.props.loadComplete(this.player)
+            this.props.loadComplete(this)
+        }
+        if (this.props.onInterval) {
+            this.interval = setInterval(() => {
+                this.props.onInterval(this.player)
+            }, 100)
         }
     }
 
     componentWillUnmount() {
         if (this.player)
             this.player.dispose()
+        clearInterval(this.interval)
     }
 
     render() {

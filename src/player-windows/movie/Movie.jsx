@@ -7,6 +7,9 @@ import MoviePlayer from "../video-player/MoviePlayer";
 
 class Movie extends Component{
 
+    playbackTimeWriteTimeoutS = 10
+    lastWrite = 0
+
     constructor(props) {
         super(props);
         const title = new URLSearchParams(this.props.location.search).get("title")
@@ -16,10 +19,33 @@ class Movie extends Component{
         }
     }
 
+    playbackTimeKey = () => `${this.state.title}-playbackTime`
+
+    writeMoviePlaybackTime = (vjs) => {
+        if (typeof(Storage)){
+            if (Math.abs(vjs.currentTime() - this.lastWrite) > this.playbackTimeWriteTimeoutS){
+                this.lastWrite = vjs.currentTime()
+                localStorage.setItem(this.playbackTimeKey(), `${vjs.currentTime().toString()}`)
+            }
+        }
+    }
+
+    loadMovieFromPriorPlayback = (moviePlayer) => {
+        if (typeof(Storage)){
+            if (moviePlayer.videoNode){
+                moviePlayer.videoNode.currentTime = localStorage.getItem(this.playbackTimeKey()) | 0
+                console.log("movie started, playback time set to: " + moviePlayer.videoNode.currentTime)
+            }
+            else{
+                console.log("vjs was null")
+            }
+        }
+    }
+
     videoJsOptions = () => {
         return {
             autoplay: true,
-            playbackRates: [0.5, 1, 1.5, 2],
+            playbackRates: [0.5, 0.75, 1, 1.25, 1.5, 2],
             controls: true,
             sources: [{
                 src: this.state.src,
@@ -29,6 +55,12 @@ class Movie extends Component{
             extraEvents: {
                 ended: () => {},
                 play: () => {}
+            },
+            loadComplete: (moviePlayer) => {
+                this.loadMovieFromPriorPlayback(moviePlayer)
+            },
+            onInterval: (vjs) => {
+                this.writeMoviePlaybackTime(vjs)
             }
         }
     };
