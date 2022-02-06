@@ -73,19 +73,20 @@ class MainMenu extends Component{
                         variant="contained"
                         onClick={() => {this.props.history.push("/meta-gen")}}
                     >Generate Meta Files</Button>
-                    <FlipSwitch
-                        onChange={() =>
-                        {
-                            // setTheme("DARK");
-                            // console.log(getTheme().main)
-                            // this.forceUpdate();
-                            const theme = this.state.theme === lightMode ? darkMode : lightMode
-                            const style = jsonToCssString(theme)
-                            console.log(style)
-                            setStyles(style)
-                            this.setState({ theme })
-                        }}
-                    />
+                    {/* TODO: recently watched?*/}
+                    {/*<FlipSwitch*/}
+                    {/*    onChange={() =>*/}
+                    {/*    {*/}
+                    {/*        // setTheme("DARK");*/}
+                    {/*        // console.log(getTheme().main)*/}
+                    {/*        // this.forceUpdate();*/}
+                    {/*        const theme = this.state.theme === lightMode ? darkMode : lightMode*/}
+                    {/*        const style = jsonToCssString(theme)*/}
+                    {/*        console.log(style)*/}
+                    {/*        setStyles(style)*/}
+                    {/*        this.setState({ theme })*/}
+                    {/*    }}*/}
+                    {/*/>*/}
                 </Grid>
             </div>
         )

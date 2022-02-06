@@ -12,6 +12,8 @@ import List from '@material-ui/core/List'
 
 import {SERVER_PATH} from "../../global/globals"
 import MoviePlayer from "../video-player/MoviePlayer"
+import { getSeriesData } from "../../helpers";
+import {Accordion, AccordionDetails, AccordionSummary, Typography} from "@material-ui/core";
 
 let videoJS = null
 
@@ -136,7 +138,8 @@ class Series extends Component{
             src: `http://${SERVER_PATH}/seriesVideoAPI?title=${encodeURIComponent(title)}&season=1&episode=1`,
             seriesInfo: null,
             selectedIndex: 0,
-            selectedSeasonIndex: 0
+            selectedSeasonIndex: 0,
+            seriesData: null
         }
     }
 
@@ -180,59 +183,65 @@ class Series extends Component{
     }
 
     render() {
+        if (this.state.seriesData === null){
+            getSeriesData(this.state.title).then(res => this.setState({ seriesData: res.results[0] ?? "no data" }))
+        }
+        console.log(this.state.seriesData)
         return (
-            <div id="series-container">
-                <div className={'invisible'}/>
-                <div id="series">
-                    {/*<h1>{`${this.state.title} - Season ${this.state.season}: Episode ${this.state.episode}`}</h1>*/}
-                    {/*video size is overridden in CSS*/}
-                    <MoviePlayer {...this.videoJsOptions()}/>
-                    <h1>{this.state.seriesInfo !== null ? this.getCurrentEpisode().title !== "" ? `${this.getCurrentEpisode().title}` : `Episode ${this.state.episode}` : null}</h1>
-                </div>
-                <div id={"series-menu-lists"}>
-                    <div id="series-season-list">
-                        <h1>Season</h1>
-                        <List id="series-season-list-list">
-                            {this.state.seriesInfo !== null ? this.state.seriesInfo.seasons.map((season, index) =>
-                                this.renderSeasonRow({index: index, style: null}, [null, undefined, ""].includes(season.title) ? "Season" : season.title, [null, undefined, ""].includes(season.title))
-                            ) : null}
-                        </List>
+            <div>
+                <div id="series-container">
+                    <div className={'invisible'}/>
+                    <div id="series">
+                        {/*<h1>{`${this.state.title} - Season ${this.state.season}: Episode ${this.state.episode}`}</h1>*/}
+                        {/*video size is overridden in CSS*/}
+                        <MoviePlayer {...this.videoJsOptions()}/>
+                        <h1>{this.state.seriesInfo !== null ? this.getCurrentEpisode().title !== "" ? `${this.getCurrentEpisode().title}` : `Episode ${this.state.episode}` : null}</h1>
                     </div>
-                    <div id="series-episode-list">
-                        <h1>Episode</h1>
-                        <List id="series-episode-list-list">
-                            {this.state.seriesInfo !== null ? Array.from(Array(this.episodeCount(this.state.season)).keys()).map((value, index) =>
-                                this.renderEpisodeRow({index: value, style: null}, "Episode")
-                            ) : null}
-                        </List>
+                    <div id={"series-menu-lists"}>
+                        <div id="series-season-list">
+                            <h1>Season</h1>
+                            <List id="series-season-list-list">
+                                {this.state.seriesInfo !== null ? this.state.seriesInfo.seasons.map((season, index) =>
+                                    this.renderSeasonRow({index: index, style: null}, [null, undefined, ""].includes(season.title) ? "Season" : season.title, [null, undefined, ""].includes(season.title))
+                                ) : null}
+                            </List>
+                        </div>
+                        <div id="series-episode-list">
+                            <h1>Episode</h1>
+                            <List id="series-episode-list-list">
+                                {this.state.seriesInfo !== null ? Array.from(Array(this.episodeCount(this.state.season)).keys()).map((value, index) =>
+                                    this.renderEpisodeRow({index: value, style: null}, "Episode")
+                                ) : null}
+                            </List>
+                        </div>
                     </div>
                 </div>
-                {/*<table id={"series-menu-lists"}>*/}
-                {/*    <tablebody>*/}
-                {/*        <tr>*/}
-                {/*            <th>*/}
-                {/*                <div id="series-season-list">*/}
-                {/*                    <h1>Season</h1>*/}
-                {/*                    <List id="series-season-list-list">*/}
-                {/*                        {this.state.seriesInfo !== null ? this.state.seriesInfo.seasons.map((season, index) =>*/}
-                {/*                            this.renderSeasonRow({index: index, style: null}, [null, undefined, ""].includes(season.title) ? "Season" : season.title, [null, undefined, ""].includes(season.title))*/}
-                {/*                        ) : null}*/}
-                {/*                    </List>*/}
-                {/*                </div>*/}
-                {/*            </th>*/}
-                {/*            <th>*/}
-                {/*                <div id="series-episode-list">*/}
-                {/*                    <h1>Episode</h1>*/}
-                {/*                    <List id="series-episode-list-list">*/}
-                {/*                        {this.state.seriesInfo !== null ? Array.from(Array(this.episodeCount(this.state.season)).keys()).map((value, index) =>*/}
-                {/*                            this.renderEpisodeRow({index: value, style: null}, "Episode")*/}
-                {/*                        ) : null}*/}
-                {/*                    </List>*/}
-                {/*                </div>*/}
-                {/*            </th>*/}
-                {/*        </tr>*/}
-                {/*    </tablebody>*/}
-                {/*</table>*/}
+                <div id="series-description-container">
+                    {this.state.seriesData && (() => {
+                        const { overview, vote_average, vote_count, first_air_date } = this.state.seriesData
+                        return (
+                            <Accordion>
+                                <AccordionSummary
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                                >
+                                    <Typography>
+                                        More Info
+                                    </Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <Typography
+                                        align="left"
+                                    >
+                                        <b>Summary:</b> {overview}<br/>
+                                        <b>First Aired Date:</b> {first_air_date}<br/>
+                                        <b>Rating:</b> {vote_average} from {vote_count} votes
+                                    </Typography>
+                                </AccordionDetails>
+                            </Accordion>
+                        )
+                    })()}
+                </div>
             </div>
         )
     }

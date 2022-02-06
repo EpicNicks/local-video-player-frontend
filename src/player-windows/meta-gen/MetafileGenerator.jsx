@@ -60,8 +60,9 @@ export default class MetaGen extends Component{
             fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_KEY}&query=${encodeURIComponent(this.state.title)}`)
                 .then(res => res.text())
                 .then(res => {
-                    console.log(res);
-                    const results = JSON.parse(res).results[0];
+                    const json = JSON.parse(res)
+                    console.log(JSON.stringify(json, undefined, 2));
+                    const results = json.results[0];
                     const id = results.id;
                     this.fetchEpisodes(id);
                 })

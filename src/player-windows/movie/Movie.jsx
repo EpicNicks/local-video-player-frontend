@@ -3,7 +3,10 @@ import './Movie.css';
 import { SERVER_PATH } from '../../global/globals';
 
 import React, { Component } from 'react';
+import {Accordion, AccordionSummary, AccordionDetails, Typography} from "@material-ui/core";
+
 import MoviePlayer from "../video-player/MoviePlayer";
+import { getMovieData } from "../../helpers";
 
 class Movie extends Component{
 
@@ -15,7 +18,8 @@ class Movie extends Component{
         const title = new URLSearchParams(this.props.location.search).get("title")
         this.state = {
             title: title,
-            src: `http://${SERVER_PATH}/movieVideoAPI?title=${encodeURIComponent(title)}`
+            src: `http://${SERVER_PATH}/movieVideoAPI?title=${encodeURIComponent(title)}`,
+            movieData: null
         }
     }
 
@@ -66,10 +70,38 @@ class Movie extends Component{
     };
 
     render() {
+        if (this.state.movieData === null){
+            getMovieData(this.state.title).then(res => this.setState({ movieData: res.results[0] ?? "no data" }))
+        }
+        console.log(this.state.movieData)
         return(
             <div id="movie">
                 <MoviePlayer {...this.videoJsOptions()}/>
                 <h1>{this.state.title}</h1>
+                {this.state.movieData && (() => {
+                    const { overview, vote_average, vote_count, release_date } = this.state.movieData
+                    return (
+                        <Accordion>
+                            <AccordionSummary
+                                aria-controls="panel1a-content"
+                                id="panel1a-header"
+                            >
+                                <Typography>
+                                    More Info
+                                </Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Typography
+                                    align="left"
+                                >
+                                    <b>Summary:</b> {overview}<br/>
+                                    <b>Release Date:</b> {release_date}<br/>
+                                    <b>Rating:</b> {vote_average} from {vote_count} votes
+                                </Typography>
+                            </AccordionDetails>
+                        </Accordion>
+                    )
+                })()}
             </div>
         );
     }

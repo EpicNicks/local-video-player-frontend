@@ -1,3 +1,8 @@
+#series-description-container{
+    width: 50%;
+    transform: translate(50%);
+}
+
 #series-container{
     display: flex;
     flex-direction: row;
@@ -55,6 +60,10 @@
 }
 
 @media screen and (max-width: 900px) and (orientation: portrait){
+    #series-description-container{
+        width: 95%;
+        transform: translate(5%);
+    }
     #series{
         width: 100%;
         padding-top: 0;
