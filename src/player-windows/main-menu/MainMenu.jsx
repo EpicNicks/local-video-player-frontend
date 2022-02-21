@@ -5,13 +5,11 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
-import { Switch as FlipSwitch } from "@material-ui/core";
 
 import { SERVER_PATH } from '../../global/globals';
 import './MainMenu.css';
 
-import { darkMode, lightMode, setStyles, jsonToCssString } from "../../styles/StylesManagement";
-import {light} from "@material-ui/core/styles/createPalette";
+import RecentlyWatchedTileContainer from "./recently-watched-tiles/RecentlyWatchedTileContainer";
 
 class MainMenu extends Component{
 
@@ -45,7 +43,7 @@ class MainMenu extends Component{
 
     constructor(props) {
         super(props)
-        this.state = { apiResponse: "not overwritten", titles: [], theme: lightMode };
+        this.state = { apiResponse: "not overwritten", titles: [] };
     }
 
     componentDidMount() {
@@ -72,21 +70,10 @@ class MainMenu extends Component{
                         id="meta-gen-btn"
                         variant="contained"
                         onClick={() => {this.props.history.push("/meta-gen")}}
-                    >Generate Meta Files</Button>
-                    {/* TODO: recently watched?*/}
-                    {/*<FlipSwitch*/}
-                    {/*    onChange={() =>*/}
-                    {/*    {*/}
-                    {/*        // setTheme("DARK");*/}
-                    {/*        // console.log(getTheme().main)*/}
-                    {/*        // this.forceUpdate();*/}
-                    {/*        const theme = this.state.theme === lightMode ? darkMode : lightMode*/}
-                    {/*        const style = jsonToCssString(theme)*/}
-                    {/*        console.log(style)*/}
-                    {/*        setStyles(style)*/}
-                    {/*        this.setState({ theme })*/}
-                    {/*    }}*/}
-                    {/*/>*/}
+                    >
+                        Generate Meta Files
+                    </Button>
+                    <RecentlyWatchedTileContainer history={this.props.history}/>
                 </Grid>
             </div>
         )

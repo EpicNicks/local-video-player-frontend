@@ -12,7 +12,7 @@ import List from '@material-ui/core/List'
 
 import {SERVER_PATH} from "../../global/globals"
 import MoviePlayer from "../video-player/MoviePlayer"
-import { getSeriesData } from "../../helpers";
+import { getSeriesData, addRecentlyWatched } from "../../helpers";
 import {Accordion, AccordionDetails, AccordionSummary, Typography} from "@material-ui/core";
 
 let videoJS = null
@@ -40,6 +40,7 @@ class Series extends Component{
         if (typeof(Storage)){
             localStorage.setItem(`${this.state.title}`, `${season},${episode}`)
         }
+        addRecentlyWatched(this.state.title, true)
     }
 
     updateVideo = (season, episode) => {

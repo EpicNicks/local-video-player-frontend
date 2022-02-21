@@ -18,7 +18,8 @@
     "web-vitals": "^1.1.0"
   },
   "scripts": {
-    "start": "node ./src/setup/ipconfig.js && react-scripts start",
+    "config-ip": "node ./src/setup/ipconfig.js",
+    "start": "react-scripts start",
     "build": "node ./src/setup/ipconfig.js && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

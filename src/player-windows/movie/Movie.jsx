@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import {Accordion, AccordionSummary, AccordionDetails, Typography} from "@material-ui/core";
 
 import MoviePlayer from "../video-player/MoviePlayer";
-import { getMovieData } from "../../helpers";
+import {addRecentlyWatched, getMovieData} from "../../helpers";
 
 class Movie extends Component{
 
@@ -62,6 +62,7 @@ class Movie extends Component{
             },
             loadComplete: (moviePlayer) => {
                 this.loadMovieFromPriorPlayback(moviePlayer)
+                addRecentlyWatched(this.state.title, false)
             },
             onInterval: (vjs) => {
                 this.writeMoviePlaybackTime(vjs)

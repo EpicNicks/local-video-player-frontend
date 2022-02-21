@@ -1,5 +1,22 @@
 import {TMDB_KEY} from "./global/apiKeys";
 
+const recentlyWatchedKey = "recentlyWatched"
+
+export const addRecentlyWatched = (title, isSeries) => {
+    if (typeof (Storage)){
+        let recentlyWatched = JSON.parse(localStorage.getItem(recentlyWatchedKey) ?? "[]")
+        recentlyWatched = recentlyWatched.filter(item => item.title !== title)
+        recentlyWatched.unshift({title: title, isSeries: isSeries})
+        localStorage.setItem(recentlyWatchedKey, JSON.stringify(recentlyWatched))
+    }
+}
+
+export const loadAllRecentlyWatched = () => {
+    if (typeof(Storage)){
+        return JSON.parse(localStorage.getItem(recentlyWatchedKey) ?? "[]")
+    }
+}
+
 export const getMovieData = async title => {
     if ([null, undefined].includes(title)){
         return null
