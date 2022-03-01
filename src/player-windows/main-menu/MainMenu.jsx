@@ -19,10 +19,13 @@ class MainMenu extends Component{
         await fetch(`http://${SERVER_PATH}/videoTitles`)
             .then(res => res.text())
             .then(res => {
-                response = res;
+                response = res
             })
-            .catch(err => err);
-        response = JSON.parse(response);
+            .catch(err => {
+                console.log("error", err)
+            })
+        console.log(response)
+        response = JSON.parse(response)
         for (const obj of response){
             titles.push(obj);
         }
