@@ -29,6 +29,9 @@ class RecentlyWatchedTile extends Component {
                     if (res.results.length > 0){
                         this.setState({posterPath: this.posterURL(res.results[0].poster_path)})
                     }
+                    else{
+                        this.setState({posterPath: process.env.PUBLIC_URL + '/error_poster.png'})
+                    }
                 })
             })
     }
@@ -46,7 +49,7 @@ class RecentlyWatchedTile extends Component {
                 <div id={"rw-poster"}>
                     <img
                         src={this.state.posterPath}
-                        alt={this.state.posterPath}
+                        alt={'no poster'}
                         width={this.props.width}
                         height={this.props.height}
                     />
